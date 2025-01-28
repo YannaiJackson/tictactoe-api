@@ -30,7 +30,7 @@ def new_multiplayer_game():
     games[game_id] = {"game": game}
 
     logging.info(f"New multiplayer game started with game_id: {game_id}")
-    return {"message": "New multiplayer game started", "game_id": game_id}
+    return {"message": "New multiplayer game started", "game_id": game_id, "state": game.get_state()}
 
 
 @app.post("/singleplayer/new-game")
@@ -46,7 +46,7 @@ def new_singleplayer_game(difficulty: str):
     games[game_id] = {"game": game, "difficulty": difficulty}
 
     logging.info(f"New singleplayer game started with game_id: {game_id} and difficulty: {difficulty}")
-    return {"message": f"New Single-player game started with difficulty: {difficulty}", "game_id": game_id}
+    return {"message": f"New Single-player game started with difficulty: {difficulty}", "game_id": game_id, "state": game.get_state()}
 
 
 @app.post("/multiplayer/make-move")

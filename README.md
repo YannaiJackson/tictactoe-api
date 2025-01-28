@@ -1,4 +1,3 @@
-
 # Tic-Tac-Toe Game Backend - Python API
 
 ## Overview
@@ -51,17 +50,13 @@ The API will start running at `http://127.0.0.1:5000`.
 **Endpoint:**  
 `POST /singleplayer/new-game`
 
-**Request Body:**
-```json
-{
-  "difficulty": "easy" // Options: "easy", "hard"
-}
-```
+**Query Parameters:**
+- `difficulty` (required): Specifies the difficulty level of the game. Options: `easy`, `hard`.
 
 **Response:**
 ```json
 {
-  "message": "New singleplayer game started difficulty: easy",
+  "message": "New Single-player game started with difficulty: easy",
   "game_id": 1,
   "state": {
     "board": [["", "", ""], ["", "", ""], ["", "", ""]],
@@ -78,14 +73,10 @@ The API will start running at `http://127.0.0.1:5000`.
 **Endpoint:**  
 `POST /multiplayer/make-move`
 
-**Request Body:**
-```json
-{
-  "game_id": 1,
-  "row": 0,
-  "column": 1
-}
-```
+**Query Parameters:**
+- `game_id` (required): The unique ID of the game.
+- `row` (required): The row index (0-2) for the move.
+- `column` (required): The column index (0-2) for the move.
 
 **Response:**
 ```json
@@ -106,14 +97,11 @@ The API will start running at `http://127.0.0.1:5000`.
 **Endpoint:**  
 `POST /singleplayer/make-move`
 
-**Request Body:**
-```json
-{
-  "game_id": 1,
-  "row": 0,
-  "column": 0
-}
-```
+**Query Parameters:**
+- `game_id` (required): The unique ID of the game.
+- `row` (required): The row index (0-2) for the move.
+- `column` (required): The column index (0-2) for the move.
+- `difficulty` (required): The difficulty level of the game. Options: `easy`, `hard`.
 
 **Response:**
 ```json
@@ -135,7 +123,7 @@ The API will start running at `http://127.0.0.1:5000`.
 `GET /state`
 
 **Query Parameters:**
-- `game_id`: The unique ID of the game.
+- `game_id` (required): The unique ID of the game.
 
 **Response:**
 ```json
