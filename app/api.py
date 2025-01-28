@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from game import TicTacToe
 from starlette.middleware.cors import CORSMiddleware
-
+import logging
 
 app = FastAPI()
 
@@ -16,16 +16,20 @@ app.add_middleware(
 # Store games in-memory for the sake of example
 games = {}
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 
 @app.post("/multiplayer/new-game")
 def new_multiplayer_game():
     """
     Start a new multiplayer game.
     """
-    game = TicTacToe()
     game_id = len(games) + 1
+    game = TicTacToe(game_id)
     games[game_id] = {"game": game}
 
+    logging.info(f"New multiplayer game started with game_id: {game_id}")
     return {"message": "New multiplayer game started", "game_id": game_id}
 
 
@@ -37,11 +41,12 @@ def new_singleplayer_game(difficulty: str):
     if difficulty not in ["easy", "hard"]:
         raise HTTPException(status_code=400, detail="Invalid difficulty. Choose 'easy' or 'hard'.")
 
-    game = TicTacToe()
     game_id = len(games) + 1
+    game = TicTacToe(game_id)
     games[game_id] = {"game": game, "difficulty": difficulty}
 
-    return {"message": f"New Single-player game started difficulty: {difficulty}", "game_id": game_id}
+    logging.info(f"New singleplayer game started with game_id: {game_id} and difficulty: {difficulty}")
+    return {"message": f"New Single-player game started with difficulty: {difficulty}", "game_id": game_id}
 
 
 @app.post("/multiplayer/make-move")
@@ -52,6 +57,8 @@ def multiplayer_make_move(game_id: int, row: int, column: int):
     game_data = games.get(game_id)
     if not game_data:
         raise HTTPException(status_code=404, detail="Game not found.")
+
+    logging.info(f"Making move for game_id {game_id} at position ({row}, {column})")
 
     game = game_data["game"]
     game.make_move(row, column)
@@ -68,9 +75,12 @@ def singleplayer_make_move(game_id: int, row: int, column: int, difficulty: str)
     if not game_data:
         raise HTTPException(status_code=404, detail="Game not found.")
 
+    logging.info(f"Making move for game_id {game_id} at position ({row}, {column}) with difficulty: {difficulty}")
+
     game = game_data["game"]
     game.make_move(row, column)
 
+    # Handle the computer's move based on difficulty level
     if difficulty == "easy":
         game.computer_easy_move()
     elif difficulty == "hard":
@@ -89,5 +99,7 @@ def get_state(game_id: int):
     game_data = games.get(game_id)
     if not game_data:
         raise HTTPException(status_code=404, detail="Game not found.")
+
+    logging.info(f"Getting state for game_id {game_id}")
 
     return {"state": game_data["game"].get_state()}
